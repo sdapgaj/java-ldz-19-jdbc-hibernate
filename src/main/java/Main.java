@@ -1,5 +1,6 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -36,7 +37,8 @@ public class Main {
     }
 
     private static void insertDataAboutLocation(Connection connection) throws SQLException {
-        Statement statement = connection.createStatement();
+        String insertSql = "INSERT INTO locations VALUES (null, ?, ?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(insertSql);
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Please fill in the city");
@@ -45,11 +47,13 @@ public class Main {
         String address = scanner.nextLine();
         System.out.println("What is the name of the location?");
         String name = scanner.nextLine();
-        String insert = String.format("INSERT INTO locations VALUES (null, '%s' , '%s' , '%s')"
-                , city, address, name);
 
-        statement.executeUpdate(insert);
-        statement.close();
+        preparedStatement.setString(1, city);
+        preparedStatement.setString(2, address);
+        preparedStatement.setString(3, name);
+
+        preparedStatement.executeUpdate();
+        preparedStatement.close();
     }
 
 }
