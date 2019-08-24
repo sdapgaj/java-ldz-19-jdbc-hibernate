@@ -55,3 +55,6 @@ CREATE TABLE transactionTicket (
     FOREIGN KEY (ticketID) REFERENCES tickets (id),
     FOREIGN KEY (transactionID) REFERENCES transactions(id)
 );
+
+ALTER TABLE users MODIFY registrationDate datetime NOT NULL DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE users MODIFY active tinyint(1) NOT NULL DEFAULT '0';
