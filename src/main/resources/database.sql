@@ -27,23 +27,6 @@ CREATE TABLE tickets (
     FOREIGN KEY (eventID) REFERENCES events (id)
 );
 
-CREATE TABLE transactionTicket (
-    id            INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    transactionID INT NOT NULL,
-    ticketID      INT NOT NULL,
-    number        INT NOT NULL,
-
-    FOREIGN KEY (ticketID) REFERENCES tickets (id),
-    FOREIGN KEY (transactionID) REFERENCES transactions(id)
-);
-
-CREATE TABLE transactions (
-    id     INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    userID INT NOT NULL,
-
-    FOREIGN KEY (userID) REFERENCES users (id)
-);
-
 CREATE TABLE users (
     id               INT          NOT NULL PRIMARY KEY AUTO_INCREMENT,
     login            VARCHAR(250) NOT NULL,
@@ -55,4 +38,20 @@ CREATE TABLE users (
     active           BOOLEAN                           DEFAULT 0
 );
 
+CREATE TABLE transactions (
+    id     INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    userID INT NOT NULL,
 
+    FOREIGN KEY (userID) REFERENCES users (id)
+);
+
+
+CREATE TABLE transactionTicket (
+    id            INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    transactionID INT NOT NULL,
+    ticketID      INT NOT NULL,
+    number        INT NOT NULL,
+
+    FOREIGN KEY (ticketID) REFERENCES tickets (id),
+    FOREIGN KEY (transactionID) REFERENCES transactions(id)
+);
