@@ -13,8 +13,9 @@ public class Main {
         String user = "root";
         String password = "";
         try (Connection connection = DriverManager.getConnection(url, user, password)) {
-            insertDataAboutLocation(connection);
-            showLocationList(connection);
+//            insertDataAboutLocation(connection);
+//            showLocationList(connection);
+            insertEvent(connection);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -54,6 +55,38 @@ public class Main {
 
         preparedStatement.executeUpdate();
         preparedStatement.close();
+    }
+
+    private static void insertEvent(Connection connection) throws SQLException {
+
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Type event name: ");
+        String eventName = scanner.nextLine();
+        System.out.print("Type start date: ");
+        String startDate = scanner.nextLine();
+        System.out.print("Type end date: ");
+        String endDate = scanner.nextLine();
+
+        System.out.println();
+
+        showLocationList(connection);
+
+        System.out.println();
+        System.out.print("Pick one location: ");
+        int locationId = scanner.nextInt();
+
+        String sqlQuery = "INSERT INTO events VALUES (NULL, ?, ?, ?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+
+        preparedStatement.setString(1, eventName);
+        preparedStatement.setString(2, startDate);
+        preparedStatement.setString(3, endDate);
+        preparedStatement.setInt(4, locationId);
+
+        preparedStatement.executeUpdate();
+        preparedStatement.close();
+
     }
 
 }
