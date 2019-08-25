@@ -1,6 +1,9 @@
 import entities.Event;
 import entities.Location;
 import entities.Ticket;
+import entities.Transaction;
+import entities.TransactionTicket;
+import entities.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -27,7 +30,9 @@ public class MainExercise {
 
         showInfoAboutAllEvents();
 
+        testTransactionSummary();
         entityManagerFactory.close();
+
     }
 
     private static void testAddEvent() {
@@ -98,6 +103,40 @@ public class MainExercise {
             }
             System.out.println();
         }
+
     }
 
+    private static BigDecimal transactionSummary(Map<Integer, Integer> ticketMap, Integer userId) {
+        entityManager.getTransaction().begin();
+
+        Transaction transaction = new Transaction();
+        transaction.setUser(entityManager.find(User.class, userId));
+
+        entityManager.persist(transaction);
+
+        BigDecimal sum = BigDecimal.ZERO;
+        for (Map.Entry<Integer, Integer> ticket : ticketMap.entrySet()) {
+            TransactionTicket tranTick = new TransactionTicket();
+            tranTick.setTransaction(transaction);
+            tranTick.setTicket(entityManager.find(Ticket.class, ticket.getKey()));
+            tranTick.setNumber(ticket.getValue());
+            entityManager.persist(tranTick);
+            BigDecimal price = entityManager.find(Ticket.class, ticket.getKey()).getPrice();
+            BigDecimal transValue = BigDecimal.valueOf(ticket.getValue()).multiply(price);
+            sum = sum.add(transValue);
+        }
+        entityManager.getTransaction().commit();
+        return sum;
+    }
+
+    private static void testTransactionSummary() {
+        Map<Integer, Integer> tickets = new HashMap<>();
+        tickets.put(1, 20);
+        tickets.put(2, 25);
+        tickets.put(3, 15);
+        tickets.put(4, 15);
+
+        System.out.println(transactionSummary(tickets, 1));
+
+    }
 }
