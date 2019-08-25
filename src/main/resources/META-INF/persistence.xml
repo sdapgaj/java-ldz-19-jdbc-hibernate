@@ -7,6 +7,7 @@
         <class>entities.Location</class>
         <class>entities.User</class>
         <class>entities.Event</class>
+        <class>entities.Ticket</class>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver" />
             <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/javaldz19?serverTimezone=Europe/Warsaw" />
