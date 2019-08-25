@@ -58,3 +58,5 @@ CREATE TABLE transactionTicket (
 
 ALTER TABLE users MODIFY registrationDate datetime NOT NULL DEFAULT CURRENT_TIMESTAMP;
 ALTER TABLE users MODIFY active tinyint(1) NOT NULL DEFAULT '0';
+
+ALTER TABLE locations ADD COLUMN version INT DEFAULT 0;
