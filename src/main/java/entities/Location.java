@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
 import java.util.List;
 
 @Entity
@@ -36,5 +37,8 @@ public class Location {
 //    @OneToMany(mappedBy = "location", fetch = FetchType.EAGER)
     @OneToMany(mappedBy = "location")
     private List<Event> events;
+
+    @Version
+    private Integer version;
 
 }
