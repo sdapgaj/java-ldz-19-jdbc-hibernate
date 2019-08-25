@@ -7,15 +7,18 @@ import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "events")
 @Table(name = "locations")
 public class Location {
 
@@ -29,5 +32,9 @@ public class Location {
     private String address;
 
     private String name;
+
+//    @OneToMany(mappedBy = "location", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "location")
+    private List<Event> events;
 
 }
