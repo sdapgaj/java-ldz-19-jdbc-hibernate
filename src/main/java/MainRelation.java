@@ -1,6 +1,8 @@
 import entities.Event;
 import entities.Location;
 import entities.Ticket;
+import entities.Transaction;
+import entities.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -21,7 +23,7 @@ public class MainRelation {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         List<Event> eventList = entityManager.createQuery("FROM Event", Event.class).getResultList();
-        eventList.forEach(System.out::println);
+//        eventList.forEach(System.out::println);
 
         Location location = entityManager.find(Location.class, 2);
         location = entityManager
@@ -32,16 +34,35 @@ public class MainRelation {
                 entityManager.createQuery("FROM Event WHERE location = :location", Event.class);
         query.setParameter("location", location);
         eventList = query.getResultList();
-        eventList.forEach(System.out::println);
+//        eventList.forEach(System.out::println);
 
-        location.getEvents().forEach(System.out::println);
+//        location.getEvents().forEach(System.out::println);
 
 //        addTicketToDataBase(entityManager, eventList);
 
         List<Ticket> tickets = entityManager.createQuery("FROM Ticket", Ticket.class).getResultList();
-        tickets.forEach(t -> System.out.println(t));
+//        tickets.forEach(t -> System.out.println(t));
+
+        addTransactionToDataBase(entityManager);
+        List<Transaction> transactions = entityManager.createQuery("FROM Transaction", Transaction.class).getResultList();
+        transactions.forEach(System.out::println);
 
         entityManagerFactory.close();
+    }
+
+    private static void addTransactionToDataBase(EntityManager entityManager) {
+        Scanner sc = new Scanner(System.in);
+        Transaction transaction = new Transaction();
+        System.out.println("Select user from list:");
+        List<User> users = entityManager.createQuery("FROM User", User.class).getResultList();
+        users.forEach(System.out::println);
+        int idOfUser = sc.nextInt();
+        sc.nextLine();
+        User user = entityManager.find(User.class, idOfUser);
+        transaction.setUser(user);
+        entityManager.getTransaction().begin();
+        entityManager.persist(transaction);
+        entityManager.getTransaction().commit();
     }
 
     private static void addTicketToDataBase(EntityManager entityManager, List<Event> eventList) {
