@@ -5,11 +5,13 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MainHibernate {
 
     public static void main(String[] args) {
-
+        Logger.getLogger("org.hibernate").setLevel(Level.SEVERE);
         EntityManagerFactory entityManagerFactory =
                 Persistence.createEntityManagerFactory("HibernateDBConnection");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -47,7 +49,7 @@ public class MainHibernate {
 
     private static void showLocationList(EntityManager entityManager) {
         List<Location> locations =
-                entityManager.createQuery("FROM Location", Location.class).getResultList();
+                entityManager.createQuery("SELECT loc FROM Location loc", Location.class).getResultList();
 
         locations.forEach(location -> {
             System.out.println(location.toString());
