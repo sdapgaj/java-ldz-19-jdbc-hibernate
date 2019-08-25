@@ -23,18 +23,18 @@ public class MainExercise {
                 Persistence.createEntityManagerFactory("HibernateDBConnection");
         entityManager = entityManagerFactory.createEntityManager();
 
-        testAddEvent();
+        //testAddEvent();
 
-
+        showInfoAboutAllEvents();
 
         entityManagerFactory.close();
     }
 
     private static void testAddEvent() {
-        Map<BigDecimal,Integer> tickets = new HashMap<>();
-        tickets.put(BigDecimal.valueOf(100.00),100);
-        tickets.put(BigDecimal.valueOf(50.00),200);
-        tickets.put(BigDecimal.valueOf(25.55),500);
+        Map<BigDecimal, Integer> tickets = new HashMap<>();
+        tickets.put(BigDecimal.valueOf(100.00), 100);
+        tickets.put(BigDecimal.valueOf(50.00), 200);
+        tickets.put(BigDecimal.valueOf(25.55), 500);
 
         //addEvent("Krzysztof Cugowski",LocalDateTime.of(2019,12,12,11,11,11),
         //      LocalDateTime.of(2019,12,15,23,23,23),1,tickets);
@@ -46,21 +46,21 @@ public class MainExercise {
 
 
         entityManager.createQuery("FROM Event", Event.class)
-                .getResultList().forEach(e-> System.out.println(e));
+                .getResultList().forEach(e -> System.out.println(e));
     }
 
-    private static void addEvent (String name,
-                                  LocalDateTime startDate,
-                                  LocalDateTime endDate,
-                                  int locationId,
-                                  Map<BigDecimal, Integer> availableTickets){
+    private static void addEvent(String name,
+                                 LocalDateTime startDate,
+                                 LocalDateTime endDate,
+                                 int locationId,
+                                 Map<BigDecimal, Integer> availableTickets) {
         entityManager.getTransaction().begin();
 
         Event event = new Event();
         event.setName(name);
         event.setStartDate(startDate);
         event.setEndDate(endDate);
-        event.setLocation(entityManager.find(Location.class,locationId));
+        event.setLocation(entityManager.find(Location.class, locationId));
 
         entityManager.persist(event);
 
@@ -74,6 +74,30 @@ public class MainExercise {
         }
 
         entityManager.getTransaction().commit();
+    }
+
+    private static void showInfoAboutAllEvents() {
+        List<Event> events = entityManager
+                .createQuery("FROM Event", Event.class).getResultList();
+
+        for (Event event : events) {
+            String name = event.getName();
+            LocalDateTime startDate = event.getStartDate();
+            LocalDateTime endDate = event.getEndDate();
+            Location location = event.getLocation();
+            List<Ticket> ticketList = entityManager
+                    .createQuery("FROM Ticket ticket WHERE ticket.event = :event", Ticket.class)
+                    .setParameter("event", event)
+                    .getResultList();
+            System.out.printf("%s (%s - %s)\n%s %s %s\n"
+                    , name, startDate, endDate
+                    , location.getName(), location.getCity(), location.getAddress());
+            for (Ticket ticket : ticketList) {
+                System.out.println("- " + ticket.getPrice()
+                        + " PLN (" + ticket.getNumber() + ")");
+            }
+            System.out.println();
+        }
     }
 
 }
